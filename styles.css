@@ -36,14 +36,14 @@ body {
   position: relative;
 }
 
-.ground .street {
+.street {
   background-image: linear-gradient(#464646, #242424);
   position: absolute;
   width: 200vw;
   height: 100%;
 }
 
-.ground .street .lines {
+.lines {
   position: absolute;
   background-image: url("./assets/line.png");
   background-size: 12.5% auto;
@@ -113,4 +113,43 @@ body {
   height: 90%;
   bottom: 0px;
   left: 0;
+}
+
+.car-wrapper {
+  position: relative;
+}
+
+.car {
+  position: absolute;
+  bottom: 3%;
+  left: 0;
+  right: 0;
+  margin: auto;
+  background-image: url("./assets/car.png");
+  --car-width: 120vh;
+  background-size: contain;
+  width: var(--car-width);
+  aspect-ratio: 2.3;
+}
+
+.car::after {
+  content: "";
+  background-image: url("./assets/wheel.png");
+  background-size: cover;
+  width: 15.2%;
+  aspect-ratio: 1;
+  bottom: 4%;
+  left: 19%;
+  position: absolute;
+}
+
+.car::before {
+  content: "";
+  background-image: url("./assets/wheel.png");
+  background-size: cover;
+  width: 15.2%;
+  aspect-ratio: 1;
+  bottom: 4%;
+  right: 9.9%;
+  position: absolute;
 }

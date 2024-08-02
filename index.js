@@ -2,6 +2,7 @@ const street = document.querySelector(".street");
 const shadow = document.querySelector(".shadow");
 const background = document.querySelector(".background");
 const foreground = document.querySelector(".foreground");
+const carWrapper = document.querySelector(".car-wrapper");
 const character = document.querySelector(".character");
 const characterAnimation = character.animate(
   [
@@ -89,19 +90,22 @@ function togglePlayState() {
       animation.play();
     }
   });
+  addNewCar();
 } 
 
 function runFaster() {
   if (streetAnimation.playbackRate >= 3) return;
   document.getAnimations().forEach(animation => {
-    animation.playbackRate *= 1.1;
+    if (animation.id !== 'car')
+      animation.playbackRate *= 1.1;
   });
 }
 
 function runSlower() {
   if (streetAnimation.playbackRate <= 0.8) return;
   document.getAnimations().forEach(animation => {
-    animation.playbackRate *= 0.9;
+    if (animation.id !== 'car')
+      animation.playbackRate *= 0.9;
   });
 }
 
@@ -111,6 +115,66 @@ setInterval(() => {
   }
 }, 3000);
 
+async function addNewCar() {
+  if (
+    streetAnimation.playState !== "running" ||
+    document.querySelector(".car")
+  )
+    return;
+  const car = document.createElement("div");
+  car.classList = "car";
+  const carAnimation = car.animate(
+    [
+      {
+        transform: "translateX(-100vw)",
+      },
+      {
+        transform: "translateX(100vw)",
+      },
+    ],
+    {
+      id: "car",
+      duration: Math.random() * 4000 + 200,
+      easing: "linear",
+    }
+  );
+  ["::after", "::before"].forEach((pseudoElement) => {
+    car.animate(
+      [
+        {
+          transform: "rotate(0)",
+        },
+        {
+          transform: "rotate(360deg)",
+        },
+      ],
+      {
+        id: "car",
+        pseudoElement,
+        iterations: Infinity,
+        easing: "linear",
+        duration: carAnimation.effect.getComputedTiming().duration / 8 ,
+      }
+    );
+  });
+
+  carWrapper.appendChild(car);
+  await carAnimation.finished;
+  car.remove();
+
+  setTimeout(() => {
+    if (streetAnimation.playState === "running") {
+      addNewCar();
+    }
+  }, Math.random() * 4000);
+}
+streetAnimation.ready.then(() => {
+  if (streetAnimation.playState === 'running') {
+    addNewCar();
+  }
+});
+
+addNewCar();
 document.addEventListener("keyup", event => {
   switch (event.code) {
     case 'ArrowUp':
